@@ -12,12 +12,13 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist",
-    "start": "parcel src/index.html",
-    "build-prod": "parcel build src/index.html"
+    "start": "parcel src/index.pug",
+    "build-prod": "parcel build src/index.pug"
   },
   "dependencies": {},
   "devDependencies": {
     "parcel-bundler": "^1.12.3",
+    "pug": "^2.0.4",
     "sass": "^1.26.3"
   }
 }
