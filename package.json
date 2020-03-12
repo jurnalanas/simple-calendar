@@ -1,0 +1,23 @@
+{
+  "name": "simple-calendar",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [
+    "vanilla javascript",
+    "static website",
+    "calendar"
+  ],
+  "author": "Muhammad Nasrurrohman",
+  "license": "ISC",
+  "scripts": {
+    "clean": "rimraf dist",
+    "start": "parcel src/index.html",
+    "build-prod": "parcel build src/index.html"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "parcel-bundler": "^1.12.3",
+    "sass": "^1.26.3"
+  }
+}
