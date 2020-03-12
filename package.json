@@ -12,12 +12,17 @@
   "license": "ISC",
   "scripts": {
     "clean": "rimraf dist",
+    "format": "prettier --write \"src/**/*.{js}\"",
+    "lint": "eslint \"src/**/*.{js}\" --quiet",
     "start": "parcel src/index.pug",
     "build-prod": "parcel build src/index.pug"
   },
   "dependencies": {},
   "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
     "parcel-bundler": "^1.12.3",
+    "prettier": "^1.19.1",
     "pug": "^2.0.4",
     "sass": "^1.26.3"
   }
