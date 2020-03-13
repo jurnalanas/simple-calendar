@@ -28,3 +28,8 @@ To create a production build:
 ```sh
 yarn build-prod
 ```
+
+## Screenshots
+
+![Calendar](/static/calendar.png)
+![Add new event](/static/event.png)
