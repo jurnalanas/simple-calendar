@@ -1,4 +1,5 @@
 import "./styles.scss";
+import datePicker from './date.js'
 
 const cal = {
   /* [PROPERTIES] */
@@ -23,99 +24,14 @@ const cal = {
       endDay = new Date(cal.sYear, cal.sMth, daysInMth).getDay(); // last day of the month
 
     // LOAD DATA FROM LOCALSTORAGE
-    cal.data = localStorage.getItem("cal-" + cal.sMth + "-" + cal.sYear);
-    if (cal.data == null) {
-      localStorage.setItem("cal-" + cal.sMth + "-" + cal.sYear, "{}");
-      cal.data = {};
-    } else {
-      cal.data = JSON.parse(cal.data);
-    }
+    loadData();
 
     // DRAWING CALCULATIONS
     // Determine the number of blank squares before start of month
-    let squares = [];
-    if (cal.sMon && startDay != 1) {
-      let blanks = startDay == 0 ? 7 : startDay;
-      for (let i = 1; i < blanks; i++) {
-        squares.push("b");
-      }
-    }
-    if (!cal.sMon && startDay != 0) {
-      for (let i = 0; i < startDay; i++) {
-        squares.push("b");
-      }
-    }
+    let squares = setUpCalendar(startDay, daysInMth, endDay);
 
-    // Populate the days of the month
-    for (let i = 1; i <= daysInMth; i++) {
-      squares.push(i);
-    }
-
-    // Determine the number of blank squares after end of month
-    if (cal.sMon && endDay != 0) {
-      let blanks = endDay == 6 ? 1 : 7 - endDay;
-      for (let i = 0; i < blanks; i++) {
-        squares.push("b");
-      }
-    }
-    if (!cal.sMon && endDay != 6) {
-      let blanks = endDay == 0 ? 6 : 6 - endDay;
-      for (let i = 0; i < blanks; i++) {
-        squares.push("b");
-      }
-    }
-
-    // DRAW HTML
-    // Container & Table
-    let container = document.getElementById("cal-container"),
-      cTable = document.createElement("div");
-    cTable.id = "calendar";
-    cTable.classList = "calendar";
-    container.innerHTML = "";
-    container.appendChild(cTable);
-
-    // First row - Days
-    // let cRow = document.createElement("tr"),
-      let cCell = null,
-      days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
-    if (cal.sMon) {
-      days.push(days.shift());
-    }
-    for (let d of days) {
-      cCell = document.createElement("span");
-      cCell.classList = "day-name";
-      cCell.innerHTML = d;
-      cTable.appendChild(cCell);
-    }
-    // cRow.classList.add("head");
-    // cTable.appendChild(cRow);
-
-    // Days in Month
-    let total = squares.length;
-    // cRow = document.createElement("tr");
-    // cRow.classList.add("day2");
-    for (let i = 0; i < total; i++) {
-      cCell = document.createElement("div");
-      cCell.classList = "day";
-      if (squares[i] == "b") {
-        cCell.classList.add("day--disabled");
-      } else {
-        cCell.innerHTML = "<div class='dd'>" + squares[i] + "</div>";
-        if (cal.data[squares[i]]) {
-          cCell.innerHTML += "<div class='evt'>" + cal.data[squares[i]] + "</div>";
-        }
-        cCell.addEventListener("click", function () {
-          console.log('hmm')
-          cal.show(this);
-        });
-      }
-      cTable.appendChild(cCell);
-      // if (i != 0 && (i + 1) % 7 == 0) {
-      //   cTable.appendChild(cRow);
-      //   cRow = document.createElement("div");
-      //   cRow.classList.add("day");
-      // }
-    }
+    // DRAW Calendar
+    drawCalendar(squares);
 
     // REMOVE ANY ADD/EDIT EVENT DOCKET
     cal.close();
@@ -127,19 +43,45 @@ const cal = {
 
     // FETCH EXISTING DATA
     cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
-
     // DRAW FORM
-    const tForm = `<h3> ${this.data[this.sDay] ? "EDIT" : "ADD"} EVENT</h3>
-        <div class="event-container">
-          <div id='evt-date' class="date">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
-          <textarea id='evt-details' required>${this.data[this.sDay] ? this.data[this.sDay] : ""}</textarea>
-          <div>
-            <input type='button' id='close' class="button" value='Close'/>
-            <input type='button' id='delete' class="button" value='Delete'/>
-            <input type='submit' class="button blue" value='Save'/>
+    let tForm = ''
+
+    if (this.data[this.sDay]) {
+      // const remaining = 3 - this.data[this.sDay].length;
+      tForm = `<h3> ${this.data[this.sDay] ? "EDIT" : "ADD"} EVENTS</h3>
+          <div class="event-container">
+            <div id='evt-date' class="date-text">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
+            ${
+              this.data[this.sDay].length < 3 ?
+              this.data[this.sDay].map(item => buildEventItem(item)) : ''
+            }
+            <div>
+              <input type='button' id='close' class="button" value='Close'/>
+              <input type='button' id='delete' class="button" value='Delete'/>
+              <input type='submit' class="button blue" value='Save'/>
+            </div>
           </div>
-        </div>
-    `;
+      `;
+    } else {
+      tForm = `<h3> ${this.data[this.sDay] ? "EDIT" : "ADD"} EVENTS</h3>
+          <div class="event-container">
+            <div id='evt-date' class="date-text">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
+            <div class="event-item">
+              <h3>Time range:</h3>
+              <input type="text" id="start-time" placeholder="Start Date" class="date time start-time"/> -
+              <input type="text" id="end-time" placeholder="End Date" class="date time end-time"/>
+              <textarea id='evt-details' placeholder='description' required></textarea>
+              <textarea id='evt-emails' placeholder='email invitations'></textarea>
+            </div>
+            <div>
+              <input type='button' id='close' class="button" value='Close'/>
+              <input type='button' id='delete' class="button" value='Delete'/>
+              <input type='submit' class="button blue" value='Save'/>
+            </div>
+          </div>
+      `;
+    }
+
 
     // ATTACH
     let eForm = document.createElement("form");
@@ -153,6 +95,8 @@ const cal = {
     container.classList.remove('hidden');
     container.innerHTML = "";
     container.appendChild(eForm);
+    datePicker(".start-time", "time");
+    datePicker(".end-time", "time");
   },
 
   close: function () {
@@ -164,8 +108,18 @@ const cal = {
   save: function (evt) {
     evt.stopPropagation();
     evt.preventDefault();
-    cal.data[cal.sDay] = document.getElementById("evt-details").value;
-    localStorage.setItem("cal-" + cal.sMth + "-" + cal.sYear, JSON.stringify(cal.data));
+    if (!cal.data[cal.sDay]) {
+      cal.data[cal.sDay] = []
+    }
+    let eventData = {
+      id: 0,
+      description: document.getElementById("evt-details").value,
+      start: document.getElementById("start-time").value,
+      end: document.getElementById("end-time").value,
+      emails: document.getElementById("evt-emails").value
+    };
+    cal.data[cal.sDay].push(eventData);
+    localStorage.setItem(`cal-${cal.sMth}-${cal.sYear}`, JSON.stringify(cal.data));
     cal.list();
   },
 
@@ -173,7 +127,7 @@ const cal = {
     // cal.del() : Delete event for selected date
     if (confirm("Remove event?")) {
       delete cal.data[cal.sDay];
-      localStorage.setItem("cal-" + cal.sMth + "-" + cal.sYear, JSON.stringify(cal.data));
+      localStorage.setItem(`cal-${cal.sMth}-${cal.sYear}`, JSON.stringify(cal.data));
       cal.list();
     }
   }
@@ -215,3 +169,103 @@ window.addEventListener("load", function () {
   document.getElementById("cal-set").addEventListener("click", cal.list);
   cal.list();
 });
+
+function drawCalendar(squares) {
+  let container = document.getElementById("cal-container"), cTable = document.createElement("div");
+  cTable.id = "calendar";
+  cTable.classList = "calendar";
+  container.innerHTML = "";
+  container.appendChild(cTable);
+  // First row - Days
+  let cCell = null, days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+  if (cal.sMon) {
+    days.push(days.shift());
+  }
+  for (let d of days) {
+    cCell = document.createElement("span");
+    cCell.classList = "day-name";
+    cCell.innerHTML = d;
+    cTable.appendChild(cCell);
+  }
+
+  // Days in Month
+  let total = squares.length;
+  for (let i = 0; i < total; i++) {
+    cCell = document.createElement("div");
+    cCell.classList = "day";
+    if (squares[i] == "b") {
+      cCell.classList.add("day--disabled");
+    }
+    else {
+      cCell.innerHTML = "<div class='dd'>" + squares[i] + "</div>";
+      if (cal.data[squares[i]]) {
+        const items = cal.data[squares[i]];
+        let eventItems = items.map(item => {
+          return `<div class="evt-item evt-item--primary">${item.description}</div>`;
+        })
+
+        cCell.innerHTML += eventItems;
+      }
+      cCell.addEventListener("click", function () {
+        cal.show(this);
+      });
+    }
+    cTable.appendChild(cCell);
+  }
+}
+
+function setUpCalendar(startDay, daysInMth, endDay) {
+  let squares = [];
+  if (cal.sMon && startDay != 1) {
+    let blanks = startDay == 0 ? 7 : startDay;
+    for (let i = 1; i < blanks; i++) {
+      squares.push("b");
+    }
+  }
+  if (!cal.sMon && startDay != 0) {
+    for (let i = 0; i < startDay; i++) {
+      squares.push("b");
+    }
+  }
+  // Populate the days of the month
+  for (let i = 1; i <= daysInMth; i++) {
+    squares.push(i);
+  }
+  // Determine the number of blank squares after end of month
+  if (cal.sMon && endDay != 0) {
+    let blanks = endDay == 6 ? 1 : 7 - endDay;
+    for (let i = 0; i < blanks; i++) {
+      squares.push("b");
+    }
+  }
+  if (!cal.sMon && endDay != 6) {
+    let blanks = endDay == 0 ? 6 : 6 - endDay;
+    for (let i = 0; i < blanks; i++) {
+      squares.push("b");
+    }
+  }
+  return squares;
+}
+
+function loadData() {
+  cal.data = localStorage.getItem(`cal-${cal.sMth}-${cal.sYear}`);
+  if (cal.data == null) {
+    localStorage.setItem(`cal-${cal.sMth}-${cal.sYear}`, "{}");
+    cal.data = {};
+  }
+  else {
+    cal.data = JSON.parse(cal.data);
+  }
+}
+
+function buildEventItem(item) {
+  return `
+    <div class="event-item">
+      <h3>Time range:</h3>
+      <input type="text" id="start-time" placeholder="Start Date" class="date time start-time" value="${item.start ? item.start : '00:00 AM'}"/> -
+      <input type="text" id="end-time" placeholder="End Date" class="date time end-time" value="${item.start ? item.end : '01:00 AM'}"/>
+      <textarea id='evt-details' placeholder='description' required>${item.description ? item.description : ''}</textarea>
+      <textarea id='evt-emails' placeholder='email invitations'>${item.emails ? item.emails : ''}</textarea>
+    </div>
+  `;
+}
