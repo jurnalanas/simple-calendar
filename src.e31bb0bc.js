@@ -4883,6 +4883,8 @@ require("./styles.scss");
 
 var _date = _interopRequireDefault(require("./date.js"));
 
+var _moment = require("moment");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var cal = {
@@ -4926,37 +4928,31 @@ var cal = {
 
     cal.close();
   },
+  showEdit: function showEdit(el, id) {
+    cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
+    var tForm = "";
+    var currentData = this.data[this.sDay];
+    var temp = currentData[id];
+    var eventItemsForm = "\n      <div class=\"event-item\">\n        <h3>Time range:</h3>\n        <input type=\"hidden\" id=\"event-id\" value=\"".concat(temp.id, "\">\n        <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\" value=\"").concat(temp.start, "\"/> -\n        <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\" value=\"").concat(temp.end, "\"/>\n        <textarea id='evt-details' placeholder='description' required>").concat(temp.description, "</textarea>\n        <textarea id='evt-emails' placeholder='email invitations'>").concat(temp.emails, "</textarea>\n      </div>\n    ");
+    tForm = "<h3>EDIT EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          ").concat(eventItemsForm, "\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
+    attachEventBoxListeners(tForm);
+  },
   show: function show(el) {
     // cal.show() : show edit event docket for selected day
     // PARAM el : Reference back to cell clicked
     // FETCH EXISTING DATA
-    cal.sDay = el.getElementsByClassName("dd")[0].innerHTML; // DRAW FORM
+    cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
+    var length = this.data[this.sDay] ? this.data[this.sDay].length : 0; // DRAW FORM
 
     var tForm = '';
+    tForm = "<h3> ADD EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          <div class=\"event-item\">\n            <h3>Time range:</h3>\n            <input type=\"hidden\" id=\"event-id\" value=\"").concat(length, "\">\n            <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\"/> -\n            <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\"/>\n            <textarea id='evt-details' placeholder='description' required></textarea>\n            <textarea id='evt-emails' placeholder='email invitations'></textarea>\n          </div>\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
 
-    if (this.data[this.sDay]) {
-      // const remaining = 3 - this.data[this.sDay].length;
-      tForm = "<h3> ".concat(this.data[this.sDay] ? "EDIT" : "ADD", " EVENTS</h3>\n          <div class=\"event-container\">\n            <div id='evt-date' class=\"date-text\">").concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n            ").concat(this.data[this.sDay].length < 3 ? this.data[this.sDay].map(function (item) {
-        return buildEventItem(item);
-      }) : '', "\n            <div>\n              <input type='button' id='close' class=\"button\" value='Close'/>\n              <input type='button' id='delete' class=\"button\" value='Delete'/>\n              <input type='submit' class=\"button blue\" value='Save'/>\n            </div>\n          </div>\n      ");
+    if (length >= 3) {
+      alert('Only three events allowed per day');
     } else {
-      tForm = "<h3> ".concat(this.data[this.sDay] ? "EDIT" : "ADD", " EVENTS</h3>\n          <div class=\"event-container\">\n            <div id='evt-date' class=\"date-text\">").concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n            <div class=\"event-item\">\n              <h3>Time range:</h3>\n              <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\"/> -\n              <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\"/>\n              <textarea id='evt-details' placeholder='description' required></textarea>\n              <textarea id='evt-emails' placeholder='email invitations'></textarea>\n            </div>\n            <div>\n              <input type='button' id='close' class=\"button\" value='Close'/>\n              <input type='button' id='delete' class=\"button\" value='Delete'/>\n              <input type='submit' class=\"button blue\" value='Save'/>\n            </div>\n          </div>\n      ");
-    } // ATTACH
-
-
-    var eForm = document.createElement("form");
-    eForm.addEventListener("submit", cal.save);
-    eForm.innerHTML = tForm;
-    var closeButton = eForm.querySelector('#close');
-    closeButton.addEventListener('click', cal.close);
-    var deleteButton = eForm.querySelector('#delete');
-    deleteButton.addEventListener('click', cal.del);
-    var container = document.getElementById("cal-event");
-    container.classList.remove('hidden');
-    container.innerHTML = "";
-    container.appendChild(eForm);
-    (0, _date.default)(".start-time", "time");
-    (0, _date.default)(".end-time", "time");
+      // ATTACH
+      attachEventBoxListeners(tForm);
+    }
   },
   close: function close() {
     var el = document.getElementById("cal-event");
@@ -4964,6 +4960,7 @@ var cal = {
     el.classList.add('hidden');
   },
   save: function save(evt) {
+    var eventId = parseInt(document.getElementById("event-id").value);
     evt.stopPropagation();
     evt.preventDefault();
 
@@ -4971,21 +4968,35 @@ var cal = {
       cal.data[cal.sDay] = [];
     }
 
-    var eventData = {
-      id: 0,
+    var color = '';
+
+    if (eventId === 0) {
+      color = 'primary';
+    } else if (eventId === 1) {
+      color = "warning";
+    } else {
+      color = "info";
+    }
+
+    var currentData = {
+      id: eventId,
+      theme: color,
       description: document.getElementById("evt-details").value,
       start: document.getElementById("start-time").value,
       end: document.getElementById("end-time").value,
       emails: document.getElementById("evt-emails").value
     };
-    cal.data[cal.sDay].push(eventData);
+    cal.data[cal.sDay][eventId] = currentData;
+    console.log(cal.data);
     localStorage.setItem("cal-".concat(cal.sMth, "-").concat(cal.sYear), JSON.stringify(cal.data));
     cal.list();
   },
   del: function del() {
     // cal.del() : Delete event for selected date
+    var eventId = parseInt(document.getElementById("event-id").value);
+
     if (confirm("Remove event?")) {
-      delete cal.data[cal.sDay];
+      cal.data[cal.sDay].splice(eventId, 1);
       localStorage.setItem("cal-".concat(cal.sMth, "-").concat(cal.sYear), JSON.stringify(cal.data));
       cal.list();
     }
@@ -5034,6 +5045,22 @@ window.addEventListener("load", function () {
   cal.list();
 });
 
+function attachEventBoxListeners(tForm) {
+  var eForm = document.createElement("form");
+  eForm.addEventListener("submit", cal.save);
+  eForm.innerHTML = tForm;
+  var closeButton = eForm.querySelector('#close');
+  closeButton.addEventListener('click', cal.close);
+  var deleteButton = eForm.querySelector('#delete');
+  deleteButton.addEventListener('click', cal.del);
+  var container = document.getElementById("cal-event");
+  container.classList.remove('hidden');
+  container.innerHTML = "";
+  container.appendChild(eForm);
+  (0, _date.default)(".start-time", "time");
+  (0, _date.default)(".end-time", "time");
+}
+
 function drawCalendar(squares) {
   var container = document.getElementById("cal-container"),
       cTable = document.createElement("div");
@@ -5072,13 +5099,19 @@ function drawCalendar(squares) {
       if (cal.data[squares[i]]) {
         var items = cal.data[squares[i]];
         var eventItems = items.map(function (item) {
-          return "<div class=\"evt-item evt-item--primary\">".concat(item.description, "</div>");
+          return "<div class=\"evt-item evt-item--".concat(item.theme || 'primary', "\" data-id=\"").concat(item.id, "\">").concat(item.description, "</div>");
         });
-        cCell.innerHTML += eventItems;
+        cCell.innerHTML += eventItems.join('');
       }
 
-      cCell.addEventListener("click", function () {
-        cal.show(this);
+      cCell.addEventListener("click", function (el) {
+        var id = el.target.dataset.id;
+
+        if (id) {
+          cal.showEdit(this, id);
+        } else {
+          cal.show(this);
+        }
       });
     }
 
@@ -5138,11 +5171,7 @@ function loadData() {
     cal.data = JSON.parse(cal.data);
   }
 }
-
-function buildEventItem(item) {
-  return "\n    <div class=\"event-item\">\n      <h3>Time range:</h3>\n      <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\" value=\"".concat(item.start ? item.start : '00:00 AM', "\"/> -\n      <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\" value=\"").concat(item.start ? item.end : '01:00 AM', "\"/>\n      <textarea id='evt-details' placeholder='description' required>").concat(item.description ? item.description : '', "</textarea>\n      <textarea id='evt-emails' placeholder='email invitations'>").concat(item.emails ? item.emails : '', "</textarea>\n    </div>\n  ");
-}
-},{"./styles.scss":"styles.scss","./date.js":"date.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./styles.scss":"styles.scss","./date.js":"date.js","moment":"../node_modules/moment/moment.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -5170,7 +5199,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63012" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60160" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
