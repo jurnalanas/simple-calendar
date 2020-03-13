@@ -113,14 +113,23 @@ const cal = {
   },
 
   save: function (evt) {
-    const eventId = document.getElementById("event-id").value;
+    const eventId = parseInt(document.getElementById("event-id").value);
     evt.stopPropagation();
     evt.preventDefault();
     if (!cal.data[cal.sDay]) {
       cal.data[cal.sDay] = []
     }
+    let color = '';
+    if (eventId === 0) {
+      color = 'primary';
+    } else if (eventId === 1) {
+      color = "warning";
+    } else {
+      color = "info";
+    }
     const currentData = {
       id: eventId,
+      theme: color,
       description: document.getElementById("evt-details").value,
       start: document.getElementById("start-time").value,
       end: document.getElementById("end-time").value,
@@ -134,8 +143,9 @@ const cal = {
 
   del: function () {
     // cal.del() : Delete event for selected date
+    const eventId = parseInt(document.getElementById("event-id").value);
     if (confirm("Remove event?")) {
-      delete cal.data[cal.sDay];
+      cal.data[cal.sDay].splice(eventId, 1);
       localStorage.setItem(`cal-${cal.sMth}-${cal.sYear}`, JSON.stringify(cal.data));
       cal.list();
     }
@@ -226,7 +236,7 @@ function drawCalendar(squares) {
       if (cal.data[squares[i]]) {
         const items = cal.data[squares[i]];
         let eventItems = items.map(item => {
-          return `<div class="evt-item evt-item--primary" data-id="${item.id}">${item.description}</div>`;
+          return `<div class="evt-item evt-item--${item.theme || 'primary'}" data-id="${item.id}">${item.description}</div>`;
         })
         cCell.innerHTML += eventItems.join('');
       }
@@ -287,9 +297,3 @@ function loadData() {
     cal.data = JSON.parse(cal.data);
   }
 }
-
-function sanitizeHTML (str) {
-  var temp = document.createElement("div");
-  temp.textContent = str;
-  return temp.innerHTML;
-};
