@@ -27,9 +27,15 @@ html(lang="")
         section.task.task--warning Projects
         section.task.task--danger Design Sprint
         section.task.task--primary Product Checkup 1
-        .task__detail
-            h2 Product Checkup 1
-            p 15-17th November
         section.task.task--info Product Checkup 2
+
+    div#cal-date
+      select#cal-mth(name="months")
+      select#cal-yr(name="years")
+      input#cal-set(type="button", value="SET")
+
+    div#cal-container.calendar-container
+
+    div#cal-event
 
     script(src="index.js")

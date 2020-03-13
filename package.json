@@ -2,7 +2,7 @@
   "name": "simple-calendar",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "keywords": [
     "vanilla javascript",
     "static website",
@@ -11,14 +11,19 @@
   "author": "Muhammad Nasrurrohman",
   "license": "ISC",
   "scripts": {
-    "clean": "rimraf dist",
+    "clear-build-cache": "rm -rf .cache/ dist/",
     "format": "prettier --write \"src/**/*.{js}\"",
-    "lint": "eslint \"src/**/*.{js}\" --quiet",
+    "lint": "eslint \"src\" --quiet",
     "start": "parcel src/index.pug",
     "build-prod": "parcel build src/index.pug"
   },
-  "dependencies": {},
+  "dependencies": {
+    "babel-eslint": "^10.1.0"
+  },
   "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.8.7",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "parcel-bundler": "^1.12.3",
