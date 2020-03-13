@@ -75,8 +75,8 @@ const cal = {
     container.appendChild(cTable);
 
     // First row - Days
-    let cRow = document.createElement("tr"),
-      cCell = null,
+    // let cRow = document.createElement("tr"),
+      let cCell = null,
       days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
     if (cal.sMon) {
       days.push(days.shift());
@@ -105,6 +105,7 @@ const cal = {
           cCell.innerHTML += "<div class='evt'>" + cal.data[squares[i]] + "</div>";
         }
         cCell.addEventListener("click", function () {
+          console.log('hmm')
           cal.show(this);
         });
       }
