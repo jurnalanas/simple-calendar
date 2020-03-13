@@ -155,17 +155,78 @@ body {
 .button--input {
   font-size: 1rem;
   font-weight: 500;
-  background-color: #7dc87d;
+  background-color: #0074d9;
   height: 2rem;
-  margin: 20px;
+  margin: 1em;
   border: 1px solid #69765b;
-  color: #000;
-  border-radius: 6px;
+  color: #fff;
+  border-radius: .2em;
   cursor: pointer;
+  box-shadow: 0 0 rgba(0, 0, 0, 0) inset;
 }
 
 .txt--center {
   text-align: center;
+}
+
+.cal-event {
+  margin: auto;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin-top: 30px;
+  padding: 20px;
+  position: relative;
+  border-radius: .2em;
+  border: 1px solid #ccc;
+  overflow: hidden;
+  text-align: left;
+  background: #fff;
+  margin-bottom: .6em;
+  background-color: rgb(245, 242, 240);
+
+  .date {
+    padding: 10px 0;
+    font-size: 1.2em;
+  }
+
+  textarea {
+    line-height: 1.5;
+    margin: 0px;
+    padding: 0.3em 0.6em;
+    border: 1px solid rgb(204, 204, 204);
+    background-color: rgb(255, 255, 255);
+    border-radius: 0.2em;
+    transition: all 0.3s ease 0s;
+    width: 80%;
+    height: 60px;
+  }
+
+  .button {
+    margin: .3em 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: .2em;
+    height: auto;
+    vertical-align: baseline;
+    box-shadow: 0 0 rgba(0, 0, 0, 0) inset;
+    color: #000;
+    display: inline-block;
+    text-align: center;
+    letter-spacing: inherit;
+    width: auto;
+    background-color: #fff;
+    line-height: 2rem;
+    padding: 0 20px;
+    font-size: 1rem;
+  }
+  .blue {
+    background: #0074d9 !important;
+    color: #fff !important;
+  }
+}
+
+.hidden {
+  visibility: hidden;
 }
 // .task {
 //   border-left-width: 3px;

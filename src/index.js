@@ -129,12 +129,16 @@ const cal = {
     cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
 
     // DRAW FORM
-    const tForm = `<h1> ${this.data[this.sDay] ? "EDIT" : "ADD"} EVENT</h1>
-        <div id='evt-date'>${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
-        <textarea id='evt-details' required>${this.data[this.sDay] ? this.data[this.sDay] : ""}</textarea>
-        <input type='button' id='close' value='Close'/>
-        <input type='button' id='delete' value='Delete'/>
-        <input type='submit' value='Save'/>
+    const tForm = `<h3> ${this.data[this.sDay] ? "EDIT" : "ADD"} EVENT</h3>
+        <div class="event-container">
+          <div id='evt-date' class="date">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
+          <textarea id='evt-details' required>${this.data[this.sDay] ? this.data[this.sDay] : ""}</textarea>
+          <div>
+            <input type='button' id='close' class="button" value='Close'/>
+            <input type='button' id='delete' class="button" value='Delete'/>
+            <input type='submit' class="button blue" value='Save'/>
+          </div>
+        </div>
     `;
 
     // ATTACH
@@ -146,12 +150,15 @@ const cal = {
     let deleteButton = eForm.querySelector('#delete');
     deleteButton.addEventListener('click', cal.del);
     let container = document.getElementById("cal-event");
+    container.classList.remove('hidden');
     container.innerHTML = "";
     container.appendChild(eForm);
   },
 
   close: function () {
-    document.getElementById("cal-event").innerHTML = "";
+    let el = document.getElementById("cal-event");
+    el.innerHTML = "";
+    el.classList.add('hidden');
   },
 
   save: function (evt) {
