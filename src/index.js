@@ -1,6 +1,5 @@
 import "./styles.scss";
 import datePicker from './date.js'
-import { relativeTimeThreshold } from "moment";
 
 const cal = {
   /* [PROPERTIES] */
@@ -152,43 +151,6 @@ const cal = {
   }
 };
 
-// INIT - DRAW MONTH & YEAR SELECTOR
-window.addEventListener("load", function () {
-  // DATE NOW
-  let now = new Date(),
-    nowMth = now.getMonth(),
-    nowYear = parseInt(now.getFullYear());
-
-  // APPEND MONTHS SELECTOR
-  let month = document.getElementById("cal-mth");
-  for (let i = 0; i < 12; i++) {
-    let opt = document.createElement("option");
-    opt.value = i;
-    opt.innerHTML = cal.mName[i];
-    if (i == nowMth) {
-      opt.selected = true;
-    }
-    month.appendChild(opt);
-  }
-
-  // APPEND YEARS SELECTOR
-  // Set to 10 years range. Change this as you like.
-  let year = document.getElementById("cal-yr");
-  for (let i = nowYear - 10; i <= nowYear + 10; i++) {
-    let opt = document.createElement("option");
-    opt.value = i;
-    opt.innerHTML = i;
-    if (i == nowYear) {
-      opt.selected = true;
-    }
-    year.appendChild(opt);
-  }
-
-  // START - DRAW CALENDAR
-  document.getElementById("cal-set").addEventListener("click", cal.list);
-  cal.list();
-});
-
 function attachEventBoxListeners(tForm) {
   let eForm = document.createElement("form");
   eForm.addEventListener("submit", cal.save);
@@ -297,3 +259,40 @@ function loadData() {
     cal.data = JSON.parse(cal.data);
   }
 }
+
+// INIT - DRAW MONTH & YEAR SELECTOR
+window.addEventListener("load", function () {
+  // DATE NOW
+  let now = new Date(),
+    nowMth = now.getMonth(),
+    nowYear = parseInt(now.getFullYear());
+
+  // APPEND MONTHS SELECTOR
+  let month = document.getElementById("cal-mth");
+  for (let i = 0; i < 12; i++) {
+    let opt = document.createElement("option");
+    opt.value = i;
+    opt.innerHTML = cal.mName[i];
+    if (i == nowMth) {
+      opt.selected = true;
+    }
+    month.appendChild(opt);
+  }
+
+  // APPEND YEARS SELECTOR
+  // Set to 10 years range. Change this as you like.
+  let year = document.getElementById("cal-yr");
+  for (let i = nowYear - 10; i <= nowYear + 10; i++) {
+    let opt = document.createElement("option");
+    opt.value = i;
+    opt.innerHTML = i;
+    if (i == nowYear) {
+      opt.selected = true;
+    }
+    year.appendChild(opt);
+  }
+
+  // START - DRAW CALENDAR
+  document.getElementById("cal-set").addEventListener("click", cal.list);
+  cal.list();
+});
