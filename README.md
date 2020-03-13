@@ -2,6 +2,8 @@
 
 Simple Calendar built with Vanilla JavaScript. No frameworks or libraries. User's data stored in browser's localstorage.
 
+Live: https://jurnalanas.github.io/simple-calendar/
+
 ### Prerequisites
 
 - [Node](https://nodejs.org/en/)
