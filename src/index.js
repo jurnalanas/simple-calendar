@@ -1,5 +1,6 @@
 import "./styles.scss";
 import datePicker from './date.js'
+import { relativeTimeThreshold } from "moment";
 
 const cal = {
   /* [PROPERTIES] */
@@ -37,66 +38,72 @@ const cal = {
     cal.close();
   },
 
+  showEdit(el, id) {
+    cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
+    let tForm = "";
+    const currentData = this.data[this.sDay];
+    const temp = currentData[id];
+
+    const eventItemsForm = `
+      <div class="event-item">
+        <h3>Time range:</h3>
+        <input type="hidden" id="event-id" value="${temp.id}">
+        <input type="text" id="start-time" placeholder="Start Date" class="date time start-time" value="${temp.start}"/> -
+        <input type="text" id="end-time" placeholder="End Date" class="date time end-time" value="${temp.end}"/>
+        <textarea id='evt-details' placeholder='description' required>${temp.description}</textarea>
+        <textarea id='evt-emails' placeholder='email invitations'>${temp.emails}</textarea>
+      </div>
+    `;
+    tForm = `<h3>EDIT EVENT</h3>
+        <div class="event-container">
+          <div id='evt-date' class="date-text">${this.sDay} ${
+      this.mName[this.sMth]
+    } ${this.sYear}</div>
+          ${eventItemsForm}
+          <div>
+            <input type='button' id='close' class="button" value='Close'/>
+            <input type='button' id='delete' class="button" value='Delete'/>
+            <input type='submit' class="button blue" value='Save'/>
+          </div>
+        </div>
+    `;
+    attachEventBoxListeners(tForm);
+  },
+
   show: function (el) {
     // cal.show() : show edit event docket for selected day
     // PARAM el : Reference back to cell clicked
 
     // FETCH EXISTING DATA
     cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
+    const length = this.data[this.sDay] ? this.data[this.sDay].length : 0;
     // DRAW FORM
-    let tForm = ''
+    let tForm = '';
 
-    if (this.data[this.sDay]) {
-      // const remaining = 3 - this.data[this.sDay].length;
-      tForm = `<h3> ${this.data[this.sDay] ? "EDIT" : "ADD"} EVENTS</h3>
-          <div class="event-container">
-            <div id='evt-date' class="date-text">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
-            ${
-              this.data[this.sDay].length < 3 ?
-              this.data[this.sDay].map(item => buildEventItem(item)) : ''
-            }
-            <div>
-              <input type='button' id='close' class="button" value='Close'/>
-              <input type='button' id='delete' class="button" value='Delete'/>
-              <input type='submit' class="button blue" value='Save'/>
-            </div>
+    tForm = `<h3> ADD EVENT</h3>
+        <div class="event-container">
+          <div id='evt-date' class="date-text">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
+          <div class="event-item">
+            <h3>Time range:</h3>
+            <input type="hidden" id="event-id" value="${length}">
+            <input type="text" id="start-time" placeholder="Start Date" class="date time start-time"/> -
+            <input type="text" id="end-time" placeholder="End Date" class="date time end-time"/>
+            <textarea id='evt-details' placeholder='description' required></textarea>
+            <textarea id='evt-emails' placeholder='email invitations'></textarea>
           </div>
-      `;
+          <div>
+            <input type='button' id='close' class="button" value='Close'/>
+            <input type='button' id='delete' class="button" value='Delete'/>
+            <input type='submit' class="button blue" value='Save'/>
+          </div>
+        </div>
+    `;
+    if (length >= 3) {
+      alert('Only three events allowed per day')
     } else {
-      tForm = `<h3> ${this.data[this.sDay] ? "EDIT" : "ADD"} EVENTS</h3>
-          <div class="event-container">
-            <div id='evt-date' class="date-text">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
-            <div class="event-item">
-              <h3>Time range:</h3>
-              <input type="text" id="start-time" placeholder="Start Date" class="date time start-time"/> -
-              <input type="text" id="end-time" placeholder="End Date" class="date time end-time"/>
-              <textarea id='evt-details' placeholder='description' required></textarea>
-              <textarea id='evt-emails' placeholder='email invitations'></textarea>
-            </div>
-            <div>
-              <input type='button' id='close' class="button" value='Close'/>
-              <input type='button' id='delete' class="button" value='Delete'/>
-              <input type='submit' class="button blue" value='Save'/>
-            </div>
-          </div>
-      `;
+      // ATTACH
+      attachEventBoxListeners(tForm);
     }
-
-
-    // ATTACH
-    let eForm = document.createElement("form");
-    eForm.addEventListener("submit", cal.save);
-    eForm.innerHTML = tForm;
-    let closeButton = eForm.querySelector('#close');
-    closeButton.addEventListener('click', cal.close)
-    let deleteButton = eForm.querySelector('#delete');
-    deleteButton.addEventListener('click', cal.del);
-    let container = document.getElementById("cal-event");
-    container.classList.remove('hidden');
-    container.innerHTML = "";
-    container.appendChild(eForm);
-    datePicker(".start-time", "time");
-    datePicker(".end-time", "time");
   },
 
   close: function () {
@@ -106,19 +113,21 @@ const cal = {
   },
 
   save: function (evt) {
+    const eventId = document.getElementById("event-id").value;
     evt.stopPropagation();
     evt.preventDefault();
     if (!cal.data[cal.sDay]) {
       cal.data[cal.sDay] = []
     }
-    let eventData = {
-      id: 0,
+    const currentData = {
+      id: eventId,
       description: document.getElementById("evt-details").value,
       start: document.getElementById("start-time").value,
       end: document.getElementById("end-time").value,
       emails: document.getElementById("evt-emails").value
     };
-    cal.data[cal.sDay].push(eventData);
+    cal.data[cal.sDay][eventId] = currentData;
+    console.log(cal.data)
     localStorage.setItem(`cal-${cal.sMth}-${cal.sYear}`, JSON.stringify(cal.data));
     cal.list();
   },
@@ -170,6 +179,22 @@ window.addEventListener("load", function () {
   cal.list();
 });
 
+function attachEventBoxListeners(tForm) {
+  let eForm = document.createElement("form");
+  eForm.addEventListener("submit", cal.save);
+  eForm.innerHTML = tForm;
+  let closeButton = eForm.querySelector('#close');
+  closeButton.addEventListener('click', cal.close);
+  let deleteButton = eForm.querySelector('#delete');
+  deleteButton.addEventListener('click', cal.del);
+  let container = document.getElementById("cal-event");
+  container.classList.remove('hidden');
+  container.innerHTML = "";
+  container.appendChild(eForm);
+  datePicker(".start-time", "time");
+  datePicker(".end-time", "time");
+}
+
 function drawCalendar(squares) {
   let container = document.getElementById("cal-container"), cTable = document.createElement("div");
   cTable.id = "calendar";
@@ -201,14 +226,19 @@ function drawCalendar(squares) {
       if (cal.data[squares[i]]) {
         const items = cal.data[squares[i]];
         let eventItems = items.map(item => {
-          return `<div class="evt-item evt-item--primary">${item.description}</div>`;
+          return `<div class="evt-item evt-item--primary" data-id="${item.id}">${item.description}</div>`;
         })
-
-        cCell.innerHTML += eventItems;
+        cCell.innerHTML += eventItems.join('');
       }
-      cCell.addEventListener("click", function () {
-        cal.show(this);
+      cCell.addEventListener("click", function(el) {
+        const id = el.target.dataset.id;
+        if(id) {
+          cal.showEdit(this, id);
+        } else {
+          cal.show(this);
+        }
       });
+
     }
     cTable.appendChild(cCell);
   }
@@ -258,14 +288,8 @@ function loadData() {
   }
 }
 
-function buildEventItem(item) {
-  return `
-    <div class="event-item">
-      <h3>Time range:</h3>
-      <input type="text" id="start-time" placeholder="Start Date" class="date time start-time" value="${item.start ? item.start : '00:00 AM'}"/> -
-      <input type="text" id="end-time" placeholder="End Date" class="date time end-time" value="${item.start ? item.end : '01:00 AM'}"/>
-      <textarea id='evt-details' placeholder='description' required>${item.description ? item.description : ''}</textarea>
-      <textarea id='evt-emails' placeholder='email invitations'>${item.emails ? item.emails : ''}</textarea>
-    </div>
-  `;
-}
+function sanitizeHTML (str) {
+  var temp = document.createElement("div");
+  temp.textContent = str;
+  return temp.innerHTML;
+};
