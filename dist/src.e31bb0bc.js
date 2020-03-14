@@ -4932,7 +4932,7 @@ var cal = {
     var currentData = this.data[this.sDay];
     var temp = currentData[id];
     var eventItemsForm = "\n      <div class=\"event-item\">\n        <h3>Time range:</h3>\n        <input type=\"hidden\" id=\"event-id\" value=\"".concat(temp.id, "\">\n        <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\" value=\"").concat(temp.start, "\"/> -\n        <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\" value=\"").concat(temp.end, "\"/>\n        <textarea id='evt-details' placeholder='description' required>").concat(temp.description, "</textarea>\n        <textarea id='evt-emails' placeholder='email invitations'>").concat(temp.emails, "</textarea>\n      </div>\n    ");
-    tForm = "<h3>EDIT EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          ").concat(eventItemsForm, "\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
+    tForm = "<h3>EDIT EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\" data-testid=\"date\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          ").concat(eventItemsForm, "\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
     attachEventBoxListeners(tForm);
   },
   show: function show(el) {
@@ -4943,7 +4943,7 @@ var cal = {
     var length = this.data[this.sDay] ? this.data[this.sDay].length : 0; // DRAW FORM
 
     var tForm = '';
-    tForm = "<h3> ADD EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          <div class=\"event-item\">\n            <h3>Time range:</h3>\n            <input type=\"hidden\" id=\"event-id\" value=\"").concat(length, "\">\n            <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\"/> -\n            <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\"/>\n            <textarea id='evt-details' placeholder='description' required></textarea>\n            <textarea id='evt-emails' placeholder='email invitations'></textarea>\n          </div>\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
+    tForm = "<h3> ADD EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\" data-testid=\"date\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          <div class=\"event-item\">\n            <h3>Time range:</h3>\n            <input type=\"hidden\" id=\"event-id\" value=\"").concat(length, "\">\n            <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\"/> -\n            <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\"/>\n            <textarea id='evt-details' placeholder='description' required></textarea>\n            <textarea id='evt-emails' placeholder='email invitations'></textarea>\n          </div>\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
 
     if (length >= 3) {
       alert('Only three events allowed per day');
@@ -5198,7 +5198,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60452" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53148" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
