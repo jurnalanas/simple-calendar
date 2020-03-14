@@ -249,6 +249,9 @@ input {
   border-radius: 4px;
   align-self: end;
   color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .evt-item--warning {
   background: #fdb44d;
