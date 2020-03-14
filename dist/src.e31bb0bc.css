@@ -245,24 +245,19 @@ input {
   position: relative;
   padding: 3px 5px;
   margin-bottom: 3px;
-}
-.evt-item--warning {
-  border-left-color: #fdb44d;
-  background: #fef0db;
-  color: #fc9b10;
-}
-.evt-item--info {
-  border-left-color: #4786ff;
-  margin-top: 15px;
-  background: rgba(218, 231, 255, 0.7);
-  color: #0a5eff;
-}
-.evt-item--primary {
-  background: #4786ff;
   border: 0;
   border-radius: 4px;
   align-self: end;
   color: #fff;
+}
+.evt-item--warning {
+  background: #fdb44d;
+}
+.evt-item--info {
+  background: #4CAF50;
+}
+.evt-item--primary {
+  background: #4786ff;
 }
 
 /*# sourceMappingURL=/src.e31bb0bc.css.map */

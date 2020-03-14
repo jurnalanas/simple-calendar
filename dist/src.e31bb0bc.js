@@ -4883,8 +4883,6 @@ require("./styles.scss");
 
 var _date = _interopRequireDefault(require("./date.js"));
 
-var _moment = require("moment");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var cal = {
@@ -5001,49 +4999,7 @@ var cal = {
       cal.list();
     }
   }
-}; // INIT - DRAW MONTH & YEAR SELECTOR
-
-window.addEventListener("load", function () {
-  // DATE NOW
-  var now = new Date(),
-      nowMth = now.getMonth(),
-      nowYear = parseInt(now.getFullYear()); // APPEND MONTHS SELECTOR
-
-  var month = document.getElementById("cal-mth");
-
-  for (var i = 0; i < 12; i++) {
-    var opt = document.createElement("option");
-    opt.value = i;
-    opt.innerHTML = cal.mName[i];
-
-    if (i == nowMth) {
-      opt.selected = true;
-    }
-
-    month.appendChild(opt);
-  } // APPEND YEARS SELECTOR
-  // Set to 10 years range. Change this as you like.
-
-
-  var year = document.getElementById("cal-yr");
-
-  for (var _i = nowYear - 10; _i <= nowYear + 10; _i++) {
-    var _opt = document.createElement("option");
-
-    _opt.value = _i;
-    _opt.innerHTML = _i;
-
-    if (_i == nowYear) {
-      _opt.selected = true;
-    }
-
-    year.appendChild(_opt);
-  } // START - DRAW CALENDAR
-
-
-  document.getElementById("cal-set").addEventListener("click", cal.list);
-  cal.list();
-});
+};
 
 function attachEventBoxListeners(tForm) {
   var eForm = document.createElement("form");
@@ -5076,8 +5032,8 @@ function drawCalendar(squares) {
     days.push(days.shift());
   }
 
-  for (var _i2 = 0, _days = days; _i2 < _days.length; _i2++) {
-    var d = _days[_i2];
+  for (var _i = 0, _days = days; _i < _days.length; _i++) {
+    var d = _days[_i];
     cCell = document.createElement("span");
     cCell.classList = "day-name";
     cCell.innerHTML = d;
@@ -5131,21 +5087,21 @@ function setUpCalendar(startDay, daysInMth, endDay) {
   }
 
   if (!cal.sMon && startDay != 0) {
-    for (var _i3 = 0; _i3 < startDay; _i3++) {
+    for (var _i2 = 0; _i2 < startDay; _i2++) {
       squares.push("b");
     }
   } // Populate the days of the month
 
 
-  for (var _i4 = 1; _i4 <= daysInMth; _i4++) {
-    squares.push(_i4);
+  for (var _i3 = 1; _i3 <= daysInMth; _i3++) {
+    squares.push(_i3);
   } // Determine the number of blank squares after end of month
 
 
   if (cal.sMon && endDay != 0) {
     var _blanks = endDay == 6 ? 1 : 7 - endDay;
 
-    for (var _i5 = 0; _i5 < _blanks; _i5++) {
+    for (var _i4 = 0; _i4 < _blanks; _i4++) {
       squares.push("b");
     }
   }
@@ -5153,7 +5109,7 @@ function setUpCalendar(startDay, daysInMth, endDay) {
   if (!cal.sMon && endDay != 6) {
     var _blanks2 = endDay == 0 ? 6 : 6 - endDay;
 
-    for (var _i6 = 0; _i6 < _blanks2; _i6++) {
+    for (var _i5 = 0; _i5 < _blanks2; _i5++) {
       squares.push("b");
     }
   }
@@ -5170,8 +5126,51 @@ function loadData() {
   } else {
     cal.data = JSON.parse(cal.data);
   }
-}
-},{"./styles.scss":"styles.scss","./date.js":"date.js","moment":"../node_modules/moment/moment.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+} // INIT - DRAW MONTH & YEAR SELECTOR
+
+
+window.addEventListener("load", function () {
+  // DATE NOW
+  var now = new Date(),
+      nowMth = now.getMonth(),
+      nowYear = parseInt(now.getFullYear()); // APPEND MONTHS SELECTOR
+
+  var month = document.getElementById("cal-mth");
+
+  for (var i = 0; i < 12; i++) {
+    var opt = document.createElement("option");
+    opt.value = i;
+    opt.innerHTML = cal.mName[i];
+
+    if (i == nowMth) {
+      opt.selected = true;
+    }
+
+    month.appendChild(opt);
+  } // APPEND YEARS SELECTOR
+  // Set to 10 years range. Change this as you like.
+
+
+  var year = document.getElementById("cal-yr");
+
+  for (var _i6 = nowYear - 10; _i6 <= nowYear + 10; _i6++) {
+    var _opt = document.createElement("option");
+
+    _opt.value = _i6;
+    _opt.innerHTML = _i6;
+
+    if (_i6 == nowYear) {
+      _opt.selected = true;
+    }
+
+    year.appendChild(_opt);
+  } // START - DRAW CALENDAR
+
+
+  document.getElementById("cal-set").addEventListener("click", cal.list);
+  cal.list();
+});
+},{"./styles.scss":"styles.scss","./date.js":"date.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -5199,7 +5198,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60160" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60452" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
