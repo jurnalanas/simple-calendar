@@ -4931,7 +4931,7 @@ var cal = {
     var tForm = "";
     var currentData = this.data[this.sDay];
     var temp = currentData[id];
-    var eventItemsForm = "\n      <div class=\"event-item\">\n        <h3>Time range:</h3>\n        <input type=\"hidden\" id=\"event-id\" value=\"".concat(temp.id, "\">\n        <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\" value=\"").concat(temp.start, "\"/> -\n        <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\" value=\"").concat(temp.end, "\"/>\n        <textarea id='evt-details' placeholder='description' required>").concat(temp.description, "</textarea>\n        <textarea id='evt-emails' placeholder='email invitations'>").concat(temp.emails, "</textarea>\n      </div>\n    ");
+    var eventItemsForm = "\n      <div class=\"event-item\">\n        <h3>Time range:</h3>\n        <input type=\"hidden\" id=\"event-id\" value=\"".concat(temp.id, "\">\n        <input type=\"hidden\" id=\"event-theme\" value=\"").concat(temp.theme, "\">\n        <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\" value=\"").concat(temp.start, "\"/> -\n        <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\" value=\"").concat(temp.end, "\"/>\n        <textarea id='evt-details' placeholder='description' required>").concat(temp.description, "</textarea>\n        <textarea id='evt-emails' placeholder='email invitations'>").concat(temp.emails, "</textarea>\n      </div>\n    ");
     tForm = "<h3>EDIT EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\" data-testid=\"date\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          ").concat(eventItemsForm, "\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
     attachEventBoxListeners(tForm);
   },
@@ -4943,7 +4943,7 @@ var cal = {
     var length = this.data[this.sDay] ? this.data[this.sDay].length : 0; // DRAW FORM
 
     var tForm = '';
-    tForm = "<h3> ADD EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\" data-testid=\"date\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          <div class=\"event-item\">\n            <h3>Time range:</h3>\n            <input type=\"hidden\" id=\"event-id\" value=\"").concat(length, "\">\n            <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\"/> -\n            <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\"/>\n            <textarea id='evt-details' placeholder='description' required></textarea>\n            <textarea id='evt-emails' placeholder='email invitations'></textarea>\n          </div>\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
+    tForm = "<h3> ADD EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\" data-testid=\"date\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          <div class=\"event-item\">\n            <h3>Time range:</h3>\n            <input type=\"hidden\" id=\"event-id\" value=\"").concat(length, "\">\n            <input type=\"hidden\" id=\"event-theme\" value=\"\">\n            <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\"/> -\n            <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\"/>\n            <textarea id='evt-details' placeholder='description' required></textarea>\n            <textarea id='evt-emails' placeholder='email invitations'></textarea>\n          </div>\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
 
     if (length >= 3) {
       alert('Only three events allowed per day');
@@ -4959,6 +4959,7 @@ var cal = {
   },
   save: function save(evt) {
     var eventId = parseInt(document.getElementById("event-id").value);
+    var eventTheme = document.getElementById("event-theme").value;
     evt.stopPropagation();
     evt.preventDefault();
 
@@ -4966,16 +4967,7 @@ var cal = {
       cal.data[cal.sDay] = [];
     }
 
-    var color = '';
-
-    if (eventId === 0) {
-      color = 'primary';
-    } else if (eventId === 1) {
-      color = "warning";
-    } else {
-      color = "info";
-    }
-
+    var color = eventTheme || getRandomColor();
     var currentData = {
       id: eventId,
       theme: color,
@@ -5025,8 +5017,8 @@ function drawCalendar(squares) {
   container.innerHTML = "";
   container.appendChild(cTable); // First row - Days
 
-  var cCell = null,
-      days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+  var cCell = null;
+  var days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 
   if (cal.sMon) {
     days.push(days.shift());
@@ -5055,7 +5047,7 @@ function drawCalendar(squares) {
       if (cal.data[squares[i]]) {
         var items = cal.data[squares[i]];
         var eventItems = items.map(function (item) {
-          return "<div class=\"evt-item evt-item--".concat(item.theme || 'primary', "\" data-id=\"").concat(item.id, "\">").concat(item.description, "</div>");
+          return "<div class=\"evt-item\"\n            style=\"background-color: #".concat(item.theme, "\"\n            data-id=\"").concat(item.id, "\">").concat(item.description, "</div>");
         });
         cCell.innerHTML += eventItems.join('');
       }
@@ -5126,6 +5118,10 @@ function loadData() {
   } else {
     cal.data = JSON.parse(cal.data);
   }
+}
+
+function getRandomColor() {
+  return Math.floor(Math.random() * 16777215).toString(16);
 } // INIT - DRAW MONTH & YEAR SELECTOR
 
 
@@ -5198,7 +5194,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53148" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56876" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
