@@ -19,7 +19,7 @@ const cal = {
     // Note - Sun is 0 & Sat is 6
     cal.sMth = parseInt(document.getElementById("cal-mth").value); // selected month
     cal.sYear = parseInt(document.getElementById("cal-yr").value); // selected year
-    let daysInMth = new Date(cal.sYear, cal.sMth + 1, 0).getDate(), // number of days in selected month
+    const daysInMth = new Date(cal.sYear, cal.sMth + 1, 0).getDate(), // number of days in selected month
       startDay = new Date(cal.sYear, cal.sMth, 1).getDay(), // first day of the month
       endDay = new Date(cal.sYear, cal.sMth, daysInMth).getDay(); // last day of the month
 
@@ -28,7 +28,7 @@ const cal = {
 
     // DRAWING CALCULATIONS
     // Determine the number of blank squares before start of month
-    let squares = setUpCalendar(startDay, daysInMth, endDay);
+    const squares = setUpCalendar(startDay, daysInMth, endDay);
 
     // DRAW Calendar
     drawCalendar(squares);
@@ -106,7 +106,7 @@ const cal = {
   },
 
   close: function () {
-    let el = document.getElementById("cal-event");
+    const el = document.getElementById("cal-event");
     el.innerHTML = "";
     el.classList.add('hidden');
   },
@@ -152,14 +152,14 @@ const cal = {
 };
 
 function attachEventBoxListeners(tForm) {
-  let eForm = document.createElement("form");
+  const eForm = document.createElement("form");
   eForm.addEventListener("submit", cal.save);
   eForm.innerHTML = tForm;
-  let closeButton = eForm.querySelector('#close');
+  const closeButton = eForm.querySelector('#close');
   closeButton.addEventListener('click', cal.close);
-  let deleteButton = eForm.querySelector('#delete');
+  const deleteButton = eForm.querySelector('#delete');
   deleteButton.addEventListener('click', cal.del);
-  let container = document.getElementById("cal-event");
+  const container = document.getElementById("cal-event");
   container.classList.remove('hidden');
   container.innerHTML = "";
   container.appendChild(eForm);
@@ -168,7 +168,7 @@ function attachEventBoxListeners(tForm) {
 }
 
 function drawCalendar(squares) {
-  let container = document.getElementById("cal-container"), cTable = document.createElement("div");
+  const container = document.getElementById("cal-container"), cTable = document.createElement("div");
   cTable.id = "calendar";
   cTable.classList = "calendar";
   container.innerHTML = "";
@@ -178,7 +178,7 @@ function drawCalendar(squares) {
   if (cal.sMon) {
     days.push(days.shift());
   }
-  for (let d of days) {
+  for (const d of days) {
     cCell = document.createElement("span");
     cCell.classList = "day-name";
     cCell.innerHTML = d;
@@ -186,7 +186,7 @@ function drawCalendar(squares) {
   }
 
   // Days in Month
-  let total = squares.length;
+  const total = squares.length;
   for (let i = 0; i < total; i++) {
     cCell = document.createElement("div");
     cCell.classList = "day";
@@ -197,7 +197,7 @@ function drawCalendar(squares) {
       cCell.innerHTML = "<div class='dd'>" + squares[i] + "</div>";
       if (cal.data[squares[i]]) {
         const items = cal.data[squares[i]];
-        let eventItems = items.map(item => {
+        const eventItems = items.map(item => {
           return `<div class="evt-item evt-item--${item.theme || 'primary'}" data-id="${item.id}">${item.description}</div>`;
         })
         cCell.innerHTML += eventItems.join('');
@@ -217,9 +217,9 @@ function drawCalendar(squares) {
 }
 
 function setUpCalendar(startDay, daysInMth, endDay) {
-  let squares = [];
+  const squares = [];
   if (cal.sMon && startDay != 1) {
-    let blanks = startDay == 0 ? 7 : startDay;
+    const blanks = startDay == 0 ? 7 : startDay;
     for (let i = 1; i < blanks; i++) {
       squares.push("b");
     }
@@ -235,13 +235,13 @@ function setUpCalendar(startDay, daysInMth, endDay) {
   }
   // Determine the number of blank squares after end of month
   if (cal.sMon && endDay != 0) {
-    let blanks = endDay == 6 ? 1 : 7 - endDay;
+    const blanks = endDay == 6 ? 1 : 7 - endDay;
     for (let i = 0; i < blanks; i++) {
       squares.push("b");
     }
   }
   if (!cal.sMon && endDay != 6) {
-    let blanks = endDay == 0 ? 6 : 6 - endDay;
+    const blanks = endDay == 0 ? 6 : 6 - endDay;
     for (let i = 0; i < blanks; i++) {
       squares.push("b");
     }
@@ -263,14 +263,14 @@ function loadData() {
 // INIT - DRAW MONTH & YEAR SELECTOR
 window.addEventListener("load", function () {
   // DATE NOW
-  let now = new Date(),
+  const now = new Date(),
     nowMth = now.getMonth(),
     nowYear = parseInt(now.getFullYear());
 
   // APPEND MONTHS SELECTOR
-  let month = document.getElementById("cal-mth");
+  const month = document.getElementById("cal-mth");
   for (let i = 0; i < 12; i++) {
-    let opt = document.createElement("option");
+    const opt = document.createElement("option");
     opt.value = i;
     opt.innerHTML = cal.mName[i];
     if (i == nowMth) {
@@ -281,9 +281,9 @@ window.addEventListener("load", function () {
 
   // APPEND YEARS SELECTOR
   // Set to 10 years range. Change this as you like.
-  let year = document.getElementById("cal-yr");
+  const year = document.getElementById("cal-yr");
   for (let i = nowYear - 10; i <= nowYear + 10; i++) {
-    let opt = document.createElement("option");
+    const opt = document.createElement("option");
     opt.value = i;
     opt.innerHTML = i;
     if (i == nowYear) {

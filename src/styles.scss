@@ -275,6 +275,9 @@ input {
   border-radius: 4px;
   align-self: end;
   color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &--warning {
     background: #fdb44d;
