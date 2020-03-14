@@ -4931,9 +4931,13 @@ var cal = {
     var tForm = "";
     var currentData = this.data[this.sDay];
     var temp = currentData[id];
-    var eventItemsForm = "\n      <div class=\"event-item\">\n        <h3>Time range:</h3>\n        <input type=\"hidden\" id=\"event-id\" value=\"".concat(temp.id, "\">\n        <input type=\"hidden\" id=\"event-theme\" value=\"").concat(temp.theme, "\">\n        <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\" value=\"").concat(temp.start, "\"/> -\n        <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\" value=\"").concat(temp.end, "\"/>\n        <textarea id='evt-details' placeholder='description' required>").concat(temp.description, "</textarea>\n        <textarea id='evt-emails' placeholder='email invitations'>").concat(temp.emails, "</textarea>\n      </div>\n    ");
+    var eventItemsForm = "\n      <div class=\"event-item\">\n        <h3>Time range:</h3>\n        <input type=\"hidden\" id=\"event-id\" value=\"".concat(temp.id, "\">\n        <input type=\"hidden\" id=\"event-theme\" value=\"").concat(temp.theme, "\">\n        <input type=\"text\" id=\"start-time\" placeholder=\"Start Date\" class=\"date time start-time\"/> -\n        <input type=\"text\" id=\"end-time\" placeholder=\"End Date\" class=\"date time end-time\"/>\n        <textarea id='evt-details' placeholder='description' required>").concat(temp.description, "</textarea>\n        <textarea id='evt-emails' placeholder='email invitations'>").concat(temp.emails, "</textarea>\n      </div>\n    ");
     tForm = "<h3>EDIT EVENT</h3>\n        <div class=\"event-container\">\n          <div id='evt-date' class=\"date-text\" data-testid=\"date\">".concat(this.sDay, " ").concat(this.mName[this.sMth], " ").concat(this.sYear, "</div>\n          ").concat(eventItemsForm, "\n          <div>\n            <input type='button' id='close' class=\"button\" value='Close'/>\n            <input type='button' id='delete' class=\"button\" value='Delete'/>\n            <input type='submit' class=\"button blue\" value='Save'/>\n          </div>\n        </div>\n    ");
-    attachEventBoxListeners(tForm);
+    var times = {
+      start: temp.start,
+      end: temp.end
+    };
+    attachEventBoxListeners(tForm, times);
   },
   show: function show(el) {
     // cal.show() : show edit event docket for selected day
@@ -4994,6 +4998,7 @@ var cal = {
 };
 
 function attachEventBoxListeners(tForm) {
+  var times = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var eForm = document.createElement("form");
   eForm.addEventListener("submit", cal.save);
   eForm.innerHTML = tForm;
@@ -5007,6 +5012,13 @@ function attachEventBoxListeners(tForm) {
   container.appendChild(eForm);
   (0, _date.default)(".start-time", "time");
   (0, _date.default)(".end-time", "time");
+
+  if (times) {
+    var startTime = document.getElementById("start-time");
+    var endTime = document.getElementById("end-time");
+    startTime.value = times.start;
+    endTime.value = times.end;
+  }
 }
 
 function drawCalendar(squares) {
@@ -5194,7 +5206,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56876" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64592" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
