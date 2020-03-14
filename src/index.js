@@ -55,7 +55,7 @@ const cal = {
     `;
     tForm = `<h3>EDIT EVENT</h3>
         <div class="event-container">
-          <div id='evt-date' class="date-text">${this.sDay} ${
+          <div id='evt-date' class="date-text" data-testid="date">${this.sDay} ${
       this.mName[this.sMth]
     } ${this.sYear}</div>
           ${eventItemsForm}
@@ -81,7 +81,7 @@ const cal = {
 
     tForm = `<h3> ADD EVENT</h3>
         <div class="event-container">
-          <div id='evt-date' class="date-text">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
+          <div id='evt-date' class="date-text" data-testid="date">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
           <div class="event-item">
             <h3>Time range:</h3>
             <input type="hidden" id="event-id" value="${length}">
