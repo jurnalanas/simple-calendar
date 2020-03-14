@@ -9,6 +9,7 @@ const cal = {
   sMth: 0, // Current selected month
   sYear: 0, // Current selected year
   sMon: true, // Week start on Monday?
+  maxEvents: 3, // Max Events per day
 
   /* [FUNCTIONS] */
   list: function () {
@@ -82,9 +83,8 @@ const cal = {
     cal.sDay = el.getElementsByClassName("dd")[0].innerHTML;
     const length = this.data[this.sDay] ? this.data[this.sDay].length : 0;
     // DRAW FORM
-    let tForm = '';
 
-    tForm = `<h3> ADD EVENT</h3>
+    const tForm = `<h3>ADD EVENT</h3>
         <div class="event-container">
           <div id='evt-date' class="date-text" data-testid="date">${
             this.sDay
@@ -105,7 +105,7 @@ const cal = {
           </div>
         </div>
     `;
-    if (length >= 3) {
+    if (length >= cal.maxEvents) {
       alert('Only three events allowed per day')
     } else {
       // ATTACH
@@ -207,7 +207,7 @@ function drawCalendar(squares) {
       cCell.classList.add("day--disabled");
     }
     else {
-      cCell.innerHTML = "<div class='dd'>" + squares[i] + "</div>";
+      cCell.innerHTML = `<div class='dd'>${squares[i]}</div>`;
       if (cal.data[squares[i]]) {
         const items = cal.data[squares[i]];
         const eventItems = items.map(item => {
@@ -279,29 +279,9 @@ function getRandomColor() {
   return Math.floor(Math.random()*16777215).toString(16);
 }
 
-// INIT - DRAW MONTH & YEAR SELECTOR
-window.addEventListener("load", function () {
-  // DATE NOW
-  const now = new Date(),
-    nowMth = now.getMonth(),
-    nowYear = parseInt(now.getFullYear());
-
-  // APPEND MONTHS SELECTOR
-  const month = document.getElementById("cal-mth");
-  for (let i = 0; i < 12; i++) {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.innerHTML = cal.mName[i];
-    if (i == nowMth) {
-      opt.selected = true;
-    }
-    month.appendChild(opt);
-  }
-
-  // APPEND YEARS SELECTOR
-  // Set to 10 years range. Change this as you like.
+function appendYearsSelector(nowYear, yearsRange) {
   const year = document.getElementById("cal-yr");
-  for (let i = nowYear - 10; i <= nowYear + 10; i++) {
+  for (let i = nowYear - yearsRange; i <= nowYear + yearsRange; i++) {
     const opt = document.createElement("option");
     opt.value = i;
     opt.innerHTML = i;
@@ -310,8 +290,35 @@ window.addEventListener("load", function () {
     }
     year.appendChild(opt);
   }
+}
+
+function appendMonths(monthsCount, nowMth, month) {
+  for (let i = 0; i < monthsCount; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.innerHTML = cal.mName[i];
+    if (i == nowMth) {
+      opt.selected = true;
+    }
+    month.appendChild(opt);
+  }
+}
+
+window.addEventListener("load", function () {
+  const now = new Date(),
+    nowMth = now.getMonth(),
+    nowYear = parseInt(now.getFullYear()),
+    month = document.getElementById("cal-mth"),
+    monthsCount = 12,
+    yearsRange = 10,
+    calSet = document.getElementById("cal-set");
+
+
+  appendMonths(monthsCount, nowMth, month);
+  // Set to 10 years range. Change this as you like.
+  appendYearsSelector(nowYear, yearsRange);
 
   // START - DRAW CALENDAR
-  document.getElementById("cal-set").addEventListener("click", cal.list);
+  calSet.addEventListener("click", cal.list);
   cal.list();
 });
