@@ -47,6 +47,7 @@ const cal = {
       <div class="event-item">
         <h3>Time range:</h3>
         <input type="hidden" id="event-id" value="${temp.id}">
+        <input type="hidden" id="event-theme" value="${temp.theme}">
         <input type="text" id="start-time" placeholder="Start Date" class="date time start-time" value="${temp.start}"/> -
         <input type="text" id="end-time" placeholder="End Date" class="date time end-time" value="${temp.end}"/>
         <textarea id='evt-details' placeholder='description' required>${temp.description}</textarea>
@@ -81,10 +82,13 @@ const cal = {
 
     tForm = `<h3> ADD EVENT</h3>
         <div class="event-container">
-          <div id='evt-date' class="date-text" data-testid="date">${this.sDay} ${this.mName[this.sMth]} ${this.sYear}</div>
+          <div id='evt-date' class="date-text" data-testid="date">${
+            this.sDay
+          } ${this.mName[this.sMth]} ${this.sYear}</div>
           <div class="event-item">
             <h3>Time range:</h3>
             <input type="hidden" id="event-id" value="${length}">
+            <input type="hidden" id="event-theme" value="">
             <input type="text" id="start-time" placeholder="Start Date" class="date time start-time"/> -
             <input type="text" id="end-time" placeholder="End Date" class="date time end-time"/>
             <textarea id='evt-details' placeholder='description' required></textarea>
@@ -113,19 +117,14 @@ const cal = {
 
   save: function (evt) {
     const eventId = parseInt(document.getElementById("event-id").value);
+    const eventTheme = document.getElementById("event-theme").value;
     evt.stopPropagation();
     evt.preventDefault();
     if (!cal.data[cal.sDay]) {
       cal.data[cal.sDay] = []
     }
-    let color = '';
-    if (eventId === 0) {
-      color = 'primary';
-    } else if (eventId === 1) {
-      color = "warning";
-    } else {
-      color = "info";
-    }
+    const color = eventTheme || getRandomColor();
+
     const currentData = {
       id: eventId,
       theme: color,
@@ -174,7 +173,8 @@ function drawCalendar(squares) {
   container.innerHTML = "";
   container.appendChild(cTable);
   // First row - Days
-  let cCell = null, days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+  let cCell = null;
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
   if (cal.sMon) {
     days.push(days.shift());
   }
@@ -198,7 +198,9 @@ function drawCalendar(squares) {
       if (cal.data[squares[i]]) {
         const items = cal.data[squares[i]];
         const eventItems = items.map(item => {
-          return `<div class="evt-item evt-item--${item.theme || 'primary'}" data-id="${item.id}">${item.description}</div>`;
+          return `<div class="evt-item"
+            style="background-color: #${item.theme}"
+            data-id="${item.id}">${item.description}</div>`;
         })
         cCell.innerHTML += eventItems.join('');
       }
@@ -258,6 +260,10 @@ function loadData() {
   else {
     cal.data = JSON.parse(cal.data);
   }
+}
+
+function getRandomColor() {
+  return Math.floor(Math.random()*16777215).toString(16);
 }
 
 // INIT - DRAW MONTH & YEAR SELECTOR
