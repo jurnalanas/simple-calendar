@@ -29,6 +29,25 @@ To create a production build:
 yarn build-prod
 ```
 
+Run e2e test:
+
+- make sure app already run at localhost:1234 (default port)
+
+```sh
+yarn start
+```
+
+- run cycpress
+
+```sh
+cy:run
+```
+
+- or open cycpress client
+
+```sh
+cy:open
+```
 ## Screenshots
 
 ![Calendar](/static/calendar.png)
