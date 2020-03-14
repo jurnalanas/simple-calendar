@@ -48,8 +48,8 @@ const cal = {
         <h3>Time range:</h3>
         <input type="hidden" id="event-id" value="${temp.id}">
         <input type="hidden" id="event-theme" value="${temp.theme}">
-        <input type="text" id="start-time" placeholder="Start Date" class="date time start-time" value="${temp.start}"/> -
-        <input type="text" id="end-time" placeholder="End Date" class="date time end-time" value="${temp.end}"/>
+        <input type="text" id="start-time" placeholder="Start Date" class="date time start-time"/> -
+        <input type="text" id="end-time" placeholder="End Date" class="date time end-time"/>
         <textarea id='evt-details' placeholder='description' required>${temp.description}</textarea>
         <textarea id='evt-emails' placeholder='email invitations'>${temp.emails}</textarea>
       </div>
@@ -67,7 +67,11 @@ const cal = {
           </div>
         </div>
     `;
-    attachEventBoxListeners(tForm);
+    const times = {
+      start: temp.start,
+      end: temp.end
+    };
+    attachEventBoxListeners(tForm, times);
   },
 
   show: function (el) {
@@ -150,7 +154,7 @@ const cal = {
   }
 };
 
-function attachEventBoxListeners(tForm) {
+function attachEventBoxListeners(tForm, times = {}) {
   const eForm = document.createElement("form");
   eForm.addEventListener("submit", cal.save);
   eForm.innerHTML = tForm;
@@ -159,11 +163,20 @@ function attachEventBoxListeners(tForm) {
   const deleteButton = eForm.querySelector('#delete');
   deleteButton.addEventListener('click', cal.del);
   const container = document.getElementById("cal-event");
+
   container.classList.remove('hidden');
   container.innerHTML = "";
   container.appendChild(eForm);
+
+
   datePicker(".start-time", "time");
   datePicker(".end-time", "time");
+  if (times) {
+    const startTime = document.getElementById("start-time");
+    const endTime = document.getElementById("end-time");
+    startTime.value = times.start;
+    endTime.value = times.end;
+  }
 }
 
 function drawCalendar(squares) {
