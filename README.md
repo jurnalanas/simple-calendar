@@ -31,7 +31,7 @@ yarn build-prod
 
 Run e2e test:
 
-- make sure app already run at localhost:1234 (default port)
+- make sure the app already run at http://localhost:1234 (default port)
 
 ```sh
 yarn start
