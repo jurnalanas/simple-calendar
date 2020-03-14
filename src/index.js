@@ -171,7 +171,7 @@ function attachEventBoxListeners(tForm, times = {}) {
 
   datePicker(".start-time", "time");
   datePicker(".end-time", "time");
-  if (times.length) {
+  if (times['start'] || times['end']) {
     const startTime = document.getElementById("start-time");
     const endTime = document.getElementById("end-time");
     startTime.value = times.start;
