@@ -76,15 +76,18 @@ const calendar = (function () {
     return Math.floor(Math.random() * 16777215).toString(16);
   }
 
-  function attachEventBoxListeners(tForm, times = {}) {
+  function attachEventBoxListeners(tForm, times = {}, deleteFunc = true) {
     const eForm = document.createElement("form");
     eForm.addEventListener("submit", publicAPIs.save);
     eForm.innerHTML = tForm;
     const closeButton = eForm.querySelector('#close');
-    closeButton.addEventListener('click', publicAPIs.close);
-    const deleteButton = eForm.querySelector('#delete');
-    deleteButton.addEventListener('click', publicAPIs.deleteEvent);
+    closeButton.addEventListener('click', publicAPIs.closeDocket);
+    if (deleteFunc) {
+      const deleteButton = eForm.querySelector('#delete');
+      deleteButton.addEventListener('click', publicAPIs.deleteEvent);
+    }
     const container = document.getElementById("cal-event");
+
 
     container.classList.remove('hidden');
     container.innerHTML = "";
@@ -237,15 +240,15 @@ const calendar = (function () {
           </div>
           <div>
             <input type='button' id='close' class="button" value='Close'/>
-            <input type='button' id='delete' class="button" value='Delete'/>
             <input type='submit' class="button blue" value='Save'/>
           </div>
         </div>
     `;
+    const deleteFunc = false;
     if (length >= maxEvents) {
       alert('Only three events allowed per day')
     } else {
-      attachEventBoxListeners(tForm);
+      attachEventBoxListeners(tForm, {}, deleteFunc);
     }
   }
 
