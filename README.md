@@ -37,16 +37,16 @@ Run e2e test:
 yarn start
 ```
 
-- run cycpress
+- run cypress
 
 ```sh
-cy:run
+yarn cy:run
 ```
 
 - or open cycpress client
 
 ```sh
-cy:open
+yarn cy:open
 ```
 ## Screenshots
 
